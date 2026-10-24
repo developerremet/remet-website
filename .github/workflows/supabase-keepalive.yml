@@ -1,0 +1,85 @@
+# Keeps the waitlist's Supabase project from auto-pausing, and shouts if it has.
+#
+# Supabase free-tier projects pause after ~7 days without activity. When that
+# happens the project drops out of DNS, every waitlist submission fails with
+# "No connection", and nothing tells you — the form just silently stops
+# collecting. This job pings the project on a schedule so it stays awake, and
+# fails loudly (GitHub emails you on a failed scheduled run) if it cannot be
+# reached, so a pause is noticed in days rather than whenever someone thinks
+# to test the form.
+#
+# The URL and anon key are read straight out of lib/supabase-config.ts rather than copied
+# here, so rotating the key in one place keeps this working. Both are already
+# public — the anon key ships to every visitor in client JS — so no repository
+# secret is involved.
+
+name: Supabase keep-alive
+
+on:
+  schedule:
+    # Every second day at 06:17 UTC. Well inside the ~7-day pause window, with
+    # room for a couple of consecutive failures before the project goes under.
+    - cron: '17 6 */2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read Supabase config from lib/supabase-config.ts
+        id: cfg
+        run: |
+          url=$(sed -n "s/^export const SUPABASE_URL = '\(.*\)';$/\1/p" lib/supabase-config.ts)
+          key=$(sed -n "s/^export const SUPABASE_ANON_KEY = '\(.*\)';$/\1/p" lib/supabase-config.ts)
+          if [ -z "$url" ] || [ -z "$key" ]; then
+            echo "Could not parse SUPABASE_URL / SUPABASE_ANON_KEY out of lib/supabase-config.ts."
+            echo "The constants were probably renamed or reformatted — update this workflow."
+            exit 1
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "::add-mask::$key"
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+
+      - name: Ping the project
+        env:
+          URL: ${{ steps.cfg.outputs.url }}
+          KEY: ${{ steps.cfg.outputs.key }}
+        run: |
+          # A paused project loses its DNS record, so the request fails to
+          # connect rather than returning a status. Any HTTP reply at all means
+          # PostgREST answered, which means the database is up. The insert-only
+          # RLS policy makes this SELECT return 401/403 rather than rows — that
+          # is expected and still proves the project is awake.
+          for attempt in 1 2 3; do
+            code=$(curl -sS -o /tmp/body -w '%{http_code}' --max-time 30 \
+              -H "apikey: $KEY" \
+              -H "Authorization: Bearer $KEY" \
+              "$URL/rest/v1/waitlist?select=phone&limit=1") && break
+            echo "Attempt $attempt: could not reach the project."
+            [ "$attempt" -lt 3 ] && sleep 20
+          done
+
+          # curl reports a connection failure as the pseudo-status 000, which
+          # is the paused-project case: the hostname no longer resolves.
+          if [ "${code:-000}" = "000" ]; then
+            echo "FAILED: could not connect to $URL after 3 attempts."
+            echo
+            echo "The project has most likely auto-paused. Resume it in the"
+            echo "Supabase dashboard — until you do, every waitlist submission"
+            echo "fails with \"No connection\" and nothing is being collected."
+            exit 1
+          fi
+
+          echo "HTTP $code from $URL"
+          case "$code" in
+            2*|401|403) echo "Project is awake." ;;
+            5*) echo "FAILED: server error $code — reachable but unhealthy."
+                cat /tmp/body; exit 1 ;;
+            *)  echo "FAILED: unexpected status $code."
+                cat /tmp/body; exit 1 ;;
+          esac

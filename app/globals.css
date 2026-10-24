@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/*
+  Remet design tokens — the app's light theme, copied exactly from the app prototype.
+  Two website-only adjustments, both for text legibility on cream:
+  - muted text uses #6B645A (the app's #8C8472 is 2.7:1 on #E8E2D6); #8C8472 stays for decoration.
+  - the primary gradient runs #8E5FA8 -> #6B4483 (white on the app's #C79BD8 -> #8E5FA8 is 2.3-3.3:1).
+*/
+@theme {
+  --color-bg: #E8E2D6;
+  --color-surface: #EDE7DC;
+  --color-raised: #F1EBE1;
+  --color-ink: #2B2519;
+  --color-body: #544B3C;
+  --color-muted: #6B645A;
+  --color-muted-deco: #8C8472;
+  --color-orchid: #8E5FA8;
+  --color-orchid-soft: #C79BD8;
+  --color-orchid-deep: #6B4483;
+  --color-verd: #5E9E80;
+  --color-verd-deep: #4E7E68;
+  --color-verd-text: #3B6851;
+  --color-verd-glow: #8FC4A8;
+  --color-ox: #A6452F;
+  --color-ox-deep: #7E3322;
+  --color-ember: #B4622C;
+  --color-ember-deep: #8A4A20;
+  --color-live: #2C92A2;
+  --color-live-deep: #1C7382;
+  --color-g-w: #B36670;
+  --color-g-m: #1B8FA5;
+  --color-g-n: #77889B;
+  --color-tint-verified: #DDDFD2;
+  --color-tint-alert: #E7D8CC;
+  --color-tint-live: #DADFD6;
+  --color-hairline: rgba(176, 162, 138, 0.231);
+
+  --shadow-raise: -6px -6px 14px rgba(255, 255, 255, 0.92), 7px 7px 16px rgba(176, 162, 138, 0.55);
+  --shadow-raise-sm: -3px -3px 8px rgba(255, 255, 255, 0.92), 4px 4px 9px rgba(176, 162, 138, 0.55);
+  --inset-shadow-well: inset -4px -4px 9px rgba(255, 255, 255, 0.92), inset 4px 4px 10px rgba(176, 162, 138, 0.55);
+  --shadow-inset: inset -4px -4px 9px rgba(255, 255, 255, 0.92), inset 4px 4px 10px rgba(176, 162, 138, 0.55);
+  --shadow-inset-sm: inset -2px -2px 5px rgba(255, 255, 255, 0.92), inset 3px 3px 6px rgba(176, 162, 138, 0.55);
+
+  --radius-row: 15px;
+  --radius-card: 18px;
+  --radius-cta: 20px;
+  --radius-tile: 12px;
+  --radius-well: 16px;
+  --radius-chip: 13px;
+
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-hanken), system-ui, -apple-system, sans-serif;
+}
+
+/* Base rules live in the base layer so Tailwind utilities (e.g. text-ink on a link) win. */
+@layer base {
+  * { box-sizing: border-box; }
+  html { background: var(--color-bg); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--color-bg); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  p, span, div, button, label, li, td, th { text-wrap: pretty; }
+  h1, h2, h3, h4 { text-wrap: balance; }
+  a { color: var(--color-orchid-deep); }
+  :focus-visible { outline: 2px solid var(--color-orchid); outline-offset: 2px; border-radius: 6px; }
+}
+
+@layer utilities {
+  .bg-primary-cta { background: linear-gradient(145deg, #8E5FA8, #6B4483); }
+  .bg-destructive-cta { background: linear-gradient(145deg, #B4553C, #A6452F); }
+  .bg-check-badge { background: linear-gradient(145deg, #C79BD8, #8E5FA8); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
