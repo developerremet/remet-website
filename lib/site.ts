@@ -9,6 +9,11 @@ export const site = {
   grievanceSubject: "Grievance",
   acknowledgeWithin: "24 hours",
   resolveWithin: "15 days",
+  /** Short forms of the two timelines, for the figure columns on the officer cards. Keep in step with the two above. */
+  acknowledgeShort: "24h",
+  resolveShort: "15d",
+  /** Days a deleted account can still be restored by signing in. */
+  deletionGraceDays: 30,
   city: "Indore",
 } as const;
 

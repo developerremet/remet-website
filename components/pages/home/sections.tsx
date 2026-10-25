@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Reveal } from "@/components/site/reveal";
 import { WaitlistForm } from "@/components/site/waitlist-form";
 import { IconTile, MunshiSlot, ReviewNote, Row } from "@/components/ui";
+import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { BanIcon, BooksIcon, BrushIcon, CinemaIcon, ComedyIcon, CupIcon, GamingIcon, MusicIcon, PickleballIcon, PinIcon, ShieldIcon } from "./icons";
 import { Body, Eyebrow, Quote, SectionTitle, frame } from "./shared";
@@ -34,7 +35,7 @@ export function Verified() {
                 </span>
                 {c.title}
               </p>
-              <p className="m-0 mt-[9px] font-sans text-[12.5px] leading-[1.5] text-body">{c.body}</p>
+              <p className="m-0 mt-[9px] max-w-[440px] font-sans text-[12.5px] leading-[1.5] text-body">{c.body}</p>
             </li>
           ))}
         </ul>
@@ -165,17 +166,14 @@ export function Join() {
       <div className="md:max-w-[480px] lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-14">
         <Reveal className="lg:max-w-[440px]">
           <div className="flex items-end gap-3">
-            <h2 className="m-0 mb-1.5 min-w-0 flex-1 font-serif text-[30px] font-medium leading-[1.1] text-ink lg:text-[36px]">Opening in Indore.</h2>
+            <h2 className="m-0 mb-1.5 min-w-0 flex-1 font-serif text-[30px] font-medium leading-[1.1] text-ink lg:text-[36px]">{`Opening in ${site.city}.`}</h2>
             <div aria-hidden="true" className="flex h-[110px] w-24 flex-none items-end justify-center">
               <Image src="/munshi/waving.png" alt="" width={96} height={105} className="block h-auto max-h-full w-auto max-w-full object-contain" />
             </div>
           </div>
           <p className="m-0 mt-2.5 font-sans text-[14px] leading-[1.55] text-body">Leave your WhatsApp number. Munshi will tell you once, when the door opens.</p>
         </Reveal>
-        {/* Local overrides on the shared form, to match the artboard: its empty status line collapses (it takes its
-            10px gap and line height back as soon as it shows a message), and the field label uses normal line
-            height (14px, as in the design). Remove once components/site/waitlist-form.tsx does both itself. */}
-        <Reveal className="lg:max-w-[480px] [&_form>label:first-child]:leading-[normal] [&_p[role=status]:empty]:mt-0 [&_p[role=status]:empty]:min-h-0">
+        <Reveal className="lg:max-w-[480px]">
           <WaitlistForm source="home" />
           <p className="m-0 mt-2.5 text-center font-sans text-[11.5px] leading-[1.45] text-muted">One message, nothing else. We use your number only for this.</p>
           <ReviewNote className="mt-1.5 text-center leading-[1.4]">waitlist data use.</ReviewNote>

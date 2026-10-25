@@ -4,7 +4,8 @@ import { IconTile, SectionLabel } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { ChatDemo } from "./chat-demo";
 import { BubbleIcon, CupIcon, DoorIcon, HeartIcon, MoonIcon, PeopleIcon, SendIcon } from "./icons";
-import { Eyebrow, SectionTitle, frame } from "./shared";
+import { heroMapAt } from "./hero";
+import { Eyebrow, SectionTitle, frame, rise, riseAt } from "./shared";
 import { WaveLine } from "./wave-line";
 
 const insetSelected = "shadow-[inset_-4px_-4px_9px_rgba(255,255,255,0.92),inset_4px_4px_10px_rgba(176,162,138,0.55),inset_0_0_0_1.5px_#8E5FA8]";
@@ -170,10 +171,12 @@ function Meet() {
 export function Moments() {
   return (
     <section id="how" className={cn(frame, "pt-14 md:pt-16 lg:pt-24")}>
-      <Reveal>
+      {/* This intro is on the first screen (its eyebrow at 390x844, all of it from 1024px), so it rises with the hero
+          in plain CSS instead of waiting for the scroll Reveal's JavaScript. */}
+      <div className={rise} style={riseAt(heroMapAt + 60)}>
         <Eyebrow>How a meeting happens</Eyebrow>
         <SectionTitle>Five moments, from your sofa to a table.</SectionTitle>
-      </Reveal>
+      </div>
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-14">
         <div>
           <Moment label="01 · Go live" title="Say what you are up for, right now." className="mt-6">

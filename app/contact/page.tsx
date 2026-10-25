@@ -6,7 +6,7 @@ import { GroupNote, OfficeAddress, OfficerCard, UnsafeNow } from "@/components/p
 
 export const metadata: Metadata = {
   title: "Contact and grievance",
-  description: "Write to us, or reach the Grievance Officer.",
+  description: `Write to Remet support or reach the Grievance Officer. We acknowledge a grievance within ${site.acknowledgeWithin} and resolve it within ${site.resolveWithin}.`,
   alternates: { canonical: "/contact" },
 };
 

@@ -1,5 +1,6 @@
 // Waitlist storage: Supabase REST, no SDK. Ported unchanged from the previous site's waitlist.js.
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "./supabase-config";
+import { site } from "./site";
 
 const configured = () =>
   !SUPABASE_URL.includes("YOUR-PROJECT-REF") && !SUPABASE_ANON_KEY.includes("YOUR-ANON");
@@ -43,7 +44,7 @@ export async function joinWaitlist({
         Authorization: "Bearer " + SUPABASE_ANON_KEY,
         Prefer: "return=minimal",
       },
-      body: JSON.stringify({ phone: e164, city: "Indore", consent: true, source: source || "hero" }),
+      body: JSON.stringify({ phone: e164, city: site.city, consent: true, source: source || "hero" }),
     });
 
     // 23505 = unique violation. Already on the list is a success, not an error.

@@ -137,7 +137,7 @@ const controls: Control[] = [
   {
     n: "11",
     title: "Data handling and deletion",
-    body: `Data in AWS Mumbai; Aadhaar numbers never stored; intent and presence clear nightly; account deletion in-app or via ${site.email}, 30-day grace.`,
+    body: `Data in AWS Mumbai; Aadhaar numbers never stored; intent and presence clear nightly; account deletion in-app or via ${site.email}, ${site.deletionGraceDays}-day grace.`,
     icon: (
       <Icon>
         <path d="M4 17.5h14v3H4zM5 14h14v3.5H5zM4.5 10.5h13V14h-13z" />
@@ -167,10 +167,6 @@ const notDone = [
   "No calls",
 ];
 
-// The Grievance Officer card shows the same timelines as control 12, in short form ("24 hours" -> "24h",
-// "15 days" -> "15d"), so both read from site.acknowledgeWithin / site.resolveWithin.
-const shortSpan = (s: string) => s.replace(/^(\d+)\s*hours?$/i, "$1h").replace(/^(\d+)\s*days?$/i, "$1d");
-
 const groupLabel = "mt-[18px] leading-[normal]";
 const rowCls = "py-[14px] leading-[normal]";
 
@@ -198,8 +194,9 @@ function ControlCard({ control }: { control: Control }) {
 
 export function PartTwo() {
   return (
-    <section id="managed" aria-labelledby="controls-title">
-      <div id="controls" className={sectionRule}>
+    // The "Part two" jump target. A plain wrapper: only the controls below form the "How the system is managed" region.
+    <div id="managed">
+      <section id="controls" aria-labelledby="controls-title" className={sectionRule}>
         <Eyebrow>Part two</Eyebrow>
         <SectionTitle id="controls-title">How the system is managed</SectionTitle>
         {/* Part two's page intro (it sat above its own switcher in the artboard), kept as the opening line of part two. */}
@@ -235,10 +232,10 @@ export function PartTwo() {
 
         <MunshiSlot
           pose="ledger"
-          className="mt-[18px]"
+          className="mt-[18px] [&_blockquote]:max-w-[62ch]"
           quote={"\"One look. I've screened everyone here the same way, and I'm not making an exception for you.\""}
         />
-      </div>
+      </section>
 
       <section id="who" aria-labelledby="who-title" className={sectionRule}>
         <Eyebrow>The company</Eyebrow>
@@ -279,37 +276,42 @@ export function PartTwo() {
         <SectionLabel as="h3" className={groupLabel}>
           Grievance Officer
         </SectionLabel>
-        <Card className="mt-[9px] flex items-center gap-[14px] rounded-[17px] px-[15px] py-[14px]">
+        {/* Below 360px the timelines stack under the officer, so the unbreakable email keeps its own line. */}
+        <Card className="mt-[9px] flex items-center gap-[14px] rounded-[17px] px-[15px] py-[14px] max-[360px]:flex-col max-[360px]:items-start">
           <div className="min-w-0 flex-1">
             <p className="m-0 font-serif text-[17px] font-medium leading-[1.2] text-ink">{site.grievanceOfficer}</p>
             <p className="m-0 mt-[2px] font-sans text-[11.5px] leading-[1.35] text-muted">{site.company}</p>
+            {/* The 44px hit area overlaps the line above and the card's padding, so the focus ring is drawn
+                around the address itself rather than the whole hit box. */}
             <a
               href={mailto(site.grievanceSubject)}
-              className="-mb-[14px] -mt-[7px] flex min-h-11 w-fit items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline"
+              className="group -mb-[14px] -mt-[7px] flex min-h-11 w-fit items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline focus-visible:outline-none"
             >
-              {site.email}
+              <span className="rounded-[4px] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-orchid">
+                {site.email}
+              </span>
             </a>
           </div>
-          <div aria-hidden="true" className="w-px flex-none self-stretch bg-bg" />
+          <div aria-hidden="true" className="w-px flex-none self-stretch bg-bg max-[360px]:hidden" />
           <div className="flex flex-none flex-col gap-2">
             <p className="m-0 flex items-baseline gap-[6px] leading-[normal]">
-              <span className="font-serif text-[18px] font-medium text-ink">{shortSpan(site.acknowledgeWithin)}</span>
+              <span className="font-serif text-[18px] font-medium text-ink">{site.acknowledgeShort}</span>
               <span className="font-sans text-[11.5px] text-muted">to acknowledge</span>
             </p>
             <p className="m-0 flex items-baseline gap-[6px] leading-[normal]">
-              <span className="font-serif text-[18px] font-medium text-ink">{shortSpan(site.resolveWithin)}</span>
+              <span className="font-serif text-[18px] font-medium text-ink">{site.resolveShort}</span>
               <span className="font-sans text-[11.5px] text-muted">to resolve</span>
             </p>
           </div>
         </Card>
-        <p className="m-0 mt-[9px] font-sans text-[12.5px] leading-[1.45] text-muted">
+        <p className="m-0 mt-[9px] max-w-[62ch] font-sans text-[12.5px] leading-[1.45] text-muted">
           Write to {site.email} with the subject &quot;{site.grievanceSubject}&quot; and it routes to the Grievance Officer. Timelines under the
           IT&nbsp;Rules, 2021.
         </p>
 
         <MunshiSlot
           pose="papers"
-          className="mt-[18px]"
+          className="mt-[18px] [&_blockquote]:max-w-[62ch]"
           quote={"\"Every complaint lands on my desk. Not a form that goes nowhere. Say it plainly and I'll answer.\""}
         />
       </section>
@@ -327,9 +329,9 @@ export function PartTwo() {
           />
           <Row href="/safety" title="Safety" subtitle="Reporting, blocking and Munshi's Golden Rules" className={rowCls} />
           <Row href="/privacy" title="Privacy policy" subtitle="What we collect, why, and for how long" className={rowCls} />
-          <Row href="/delete-account" title="Delete account" subtitle="In the app, or by email, with 30 days to change your mind" className={rowCls} />
+          <Row href="/delete-account" title="Delete account" subtitle={`In the app, or by email, with ${site.deletionGraceDays} days to change your mind`} className={rowCls} />
         </div>
       </section>
-    </section>
+    </div>
   );
 }

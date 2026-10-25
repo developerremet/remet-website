@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 import { Chevron, ScreenHeader } from "@/components/ui";
 import { ScrollProgress } from "./scroll-progress";
 
-const wordmark = (h: number) => (
-  <Image src="/brand/wordmark-ink.png" alt="Remet" width={Math.round((h * 1480) / 454)} height={h} priority />
+// Only the homepage header's wordmark is above the fold; the footer's loads lazily.
+const wordmark = (h: number, preload = false) => (
+  <Image src="/brand/wordmark-ink.png" alt="Remet" width={Math.round((h * 1480) / 454)} height={h} preload={preload} />
 );
 
 /** The homepage content frame (22px gutter; 676px column from 768px; 1056px from 1024px). Same as components/pages/home. */
@@ -19,7 +20,7 @@ export function HomeHeader() {
       <ScrollProgress />
       <header className={cn("flex items-center justify-between pt-[18px]", homeFrame)}>
         <Link href="/" aria-label="Remet home" className="-ml-[3px] flex min-h-11 items-center">
-          {wordmark(24)}
+          {wordmark(24, true)}
         </Link>
         <nav aria-label="Main">
           <Link
@@ -44,7 +45,7 @@ export function InnerHeader({ title }: { title: string }) {
   );
 }
 
-const footerLink = "flex min-h-11 items-center font-sans text-[15px] font-semibold text-ink no-underline";
+const footerLink = "flex min-h-11 items-center font-sans text-[15px] font-semibold leading-[normal] text-ink no-underline";
 
 /** Shared footer, ported from the Footer artboard. `wide` matches the homepage frame and spreads out from 1024px. */
 export function SiteFooter({ wide = false }: { wide?: boolean }) {
@@ -52,7 +53,7 @@ export function SiteFooter({ wide = false }: { wide?: boolean }) {
     <footer className="border-t border-hairline bg-bg">
       <div className={cn("flex flex-col pb-[14px] pt-[26px]", wide ? homeFrame : "mx-auto w-full max-w-[720px] px-[22px]")}>
         <div className={cn(wide && "lg:grid lg:grid-cols-[1fr_minmax(0,380px)_minmax(0,340px)] lg:items-start lg:gap-x-14")}>
-          <Link href="/" aria-label="Remet home" className="-my-2.5 flex min-h-11 w-max items-center">
+          <Link href="/" aria-label="Remet home" className="-my-2.5 -ml-[3px] flex min-h-11 w-max items-center">
             {wordmark(24)}
           </Link>
           <nav aria-label="Footer" className={cn("mt-[22px] grid grid-cols-2 gap-x-3.5", wide && "lg:mt-0")}>
@@ -79,7 +80,7 @@ export function SiteFooter({ wide = false }: { wide?: boolean }) {
           >
             <span className="block min-w-0 flex-1">
               <span className="block font-sans text-[16.5px] font-semibold leading-[normal] text-ink">Get on the map</span>
-              <span className="mt-[3px] block font-sans text-[12.5px] leading-[normal] text-muted">Run a café, gaming zone or studio in Indore?</span>
+              <span className="mt-[3px] block font-sans text-[12.5px] leading-[normal] text-muted">Run a café, gaming zone or studio in {site.city}?</span>
             </span>
             <Chevron />
           </a>
@@ -94,8 +95,9 @@ export function SiteFooter({ wide = false }: { wide?: boolean }) {
             <br />
             {site.addressLines.join(", ")}
           </p>
-          <a href={mailto()} className="-mt-2 flex min-h-11 w-max items-center font-sans text-[13px] font-semibold text-orchid-deep no-underline">
-            {site.email}
+          {/* The 44px hit area overlaps the address line, so the focus ring is drawn on the text only. */}
+          <a href={mailto()} className="group -mt-2 flex min-h-11 w-max items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline focus-visible:outline-none">
+            <span className="rounded-[3px] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-orchid group-focus-visible:outline-solid">{site.email}</span>
           </a>
         </div>
       </div>

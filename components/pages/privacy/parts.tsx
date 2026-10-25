@@ -30,11 +30,14 @@ export function SummaryBody({ children }: { children: ReactNode }) {
   return <p className="m-0 mt-4 font-sans text-[13.5px] leading-[1.6] text-body md:max-w-[62ch]">{children}</p>;
 }
 
-/** Pressed surface note ("This is the plain-language summary..."). */
+/**
+ * Pressed surface note ("This is the plain-language summary..."). From 768px the text stops at 62ch
+ * (about 75 characters a line) while the well stays full width; at 390px the cap is wider than the well.
+ */
 export function InsetNote({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div className={cn("rounded-row bg-surface px-[15px] py-[14px] shadow-inset-sm", className)}>
-      <p className="m-0 font-sans text-[12.5px] leading-[1.5] text-muted">{children}</p>
+      <p className="m-0 font-sans text-[12.5px] leading-[1.5] text-muted md:max-w-[62ch]">{children}</p>
     </div>
   );
 }

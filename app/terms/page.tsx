@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { InnerHeader, SiteFooter } from "@/components/site/chrome";
 import { PageColumn, ReviewNote, SectionLabel } from "@/components/ui";
 import { showReviewNotes } from "@/lib/review";
+import { site } from "@/lib/site";
 import {
   Clause,
   ClauseHead,
@@ -15,13 +16,15 @@ import {
 
 export const metadata: Metadata = {
   title: "Terms of use",
-  description: "The agreement between you and Remet.",
+  description:
+    "Remet's terms of use in plain language: who can join, what you agree to, when we can remove an account, paying venues, and what we don't promise.",
   alternates: { canonical: "/terms" },
 };
 
 // Counsel's full text is not in yet. Its stand-in slots are hidden on production, which would leave
-// "Full terms" as bare headings, so production leaves out that section and its contents entries
-// until the text replaces the slots below. Then set this to true.
+// "Full terms" as bare headings, so production leaves out that section and the "On this page" list
+// (which would hold only the summary, the section directly under it) until the text replaces the slots
+// below. Then set this to true.
 const showFullTerms = showReviewNotes;
 
 const summaryEntry = { href: "#summary", label: "Plain-language summary" };
@@ -37,7 +40,7 @@ const fullTermsEntries = [
   { href: "#law", label: "Governing law" },
 ];
 
-const contents = showFullTerms ? [summaryEntry, ...fullTermsEntries] : [summaryEntry];
+const contents = [summaryEntry, ...fullTermsEntries];
 
 export default function TermsPage() {
   return (
@@ -46,18 +49,20 @@ export default function TermsPage() {
       <PageColumn className="pb-[34px]">
         <p className="m-0 mt-1 font-sans text-[13.5px] leading-[1.55] text-body">The agreement between you and Remet.</p>
 
-        <nav aria-labelledby="toc-title" className="mt-[18px]">
-          <SectionLabel id="toc-title" className="leading-[normal]">
-            On this page
-          </SectionLabel>
-          <ul className="m-0 mt-[9px] list-none rounded-row bg-surface px-[15px] py-1 shadow-inset-sm">
-            {contents.map((item, i) => (
-              <TocLink key={item.href} href={item.href} first={i === 0}>
-                {item.label}
-              </TocLink>
-            ))}
-          </ul>
-        </nav>
+        {showFullTerms && (
+          <nav aria-labelledby="toc-title" className="mt-[18px]">
+            <SectionLabel id="toc-title" className="leading-[normal]">
+              On this page
+            </SectionLabel>
+            <ul className="m-0 mt-[9px] list-none rounded-row bg-surface px-[15px] py-1 shadow-inset-sm">
+              {contents.map((item, i) => (
+                <TocLink key={item.href} href={item.href} first={i === 0}>
+                  {item.label}
+                </TocLink>
+              ))}
+            </ul>
+          </nav>
+        )}
 
         <Section id="summary" labelledBy="summary-title">
           <SectionTitle id="summary-title">Plain-language summary</SectionTitle>
@@ -92,8 +97,11 @@ export default function TermsPage() {
               people. The rest is yours.
             </SummaryBody>
           </div>
+          {/* Production leaves out "Full terms" (showFullTerms), so there the note must not point "below". */}
           <InsetNote className="mt-[6px]">
-            This is the plain-language summary. The full legal text below is being finalised by our counsel.
+            {showFullTerms
+              ? "This is the plain-language summary. The full legal text below is being finalised by our counsel."
+              : "This is the plain-language summary. The full legal text will be published here once our counsel has finalised it."}
           </InsetNote>
           <ReviewNote className="mt-[10px]">
             this summary is copied from the app&apos;s Terms of use screen. Check that ‘reduce your reach’ and permanent
@@ -141,7 +149,7 @@ export default function TermsPage() {
               slot="Ownership and use of the Remet name, Munshi, the artwork and the copy"
             />
             <Clause id="liability" title="Liability" slot="What Remet is and is not liable for" />
-            <Clause id="law" title="Governing law" slot="Governing law and jurisdiction: Indore, Madhya Pradesh" />
+            <Clause id="law" title="Governing law" slot={`Governing law and jurisdiction: ${site.city}, Madhya Pradesh`} />
           </Section>
         )}
 
