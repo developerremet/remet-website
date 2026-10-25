@@ -29,7 +29,7 @@ npm run typecheck
 
 ## Review notes and counsel slots
 
-Lines that start with "Confirm before publishing" and the dashed "Counsel to draft" boxes show on local and preview builds only. They are removed automatically on the Vercel production deployment (`NEXT_PUBLIC_VERCEL_ENV=production`), or anywhere with `NEXT_PUBLIC_HIDE_REVIEW_NOTES=1`.
+Lines that start with "Confirm before publishing", the dashed "Counsel to draft" boxes and the preview-only "Full terms" / "Full privacy policy" sections show only in `npm run dev` and on Vercel preview deployments. Everywhere else, including the production deployment, they are left out (`lib/review.ts`). To see them in a local production build, build with `SHOW_REVIEW_NOTES=1`. `NEXT_PUBLIC_HIDE_REVIEW_NOTES=1` hides them everywhere.
 
 Before remet.me points here:
 

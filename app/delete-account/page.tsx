@@ -15,7 +15,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Delete account",
-  description: "You'll disappear from the map the moment you confirm.",
+  description: `How to delete your Remet account in the app or by email, what is erased, what the law requires us to keep, and the ${site.deletionGraceDays} days you have to change your mind.`,
   alternates: { canonical: "/delete-account" },
 };
 
@@ -30,8 +30,8 @@ export default function DeleteAccountPage() {
           You&apos;ll disappear from the map the moment you confirm. Nobody can see you or wave at you again.
         </Lede>
 
-        <NoticeCard id="grace-label" title="30 days to change your mind">
-          Sign in any time in the next 30 days and everything comes back. After that it&apos;s erased for good, and even I
+        <NoticeCard id="grace-label" title={`${site.deletionGraceDays} days to change your mind`}>
+          Sign in any time in the next {site.deletionGraceDays} days and everything comes back. After that it&apos;s erased for good, and even I
           can&apos;t undo it.
         </NoticeCard>
 

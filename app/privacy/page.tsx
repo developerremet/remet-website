@@ -14,7 +14,8 @@ import {
 
 export const metadata: Metadata = {
   title: "Privacy policy",
-  description: "All of it, in plain language, any time you want to read it.",
+  description:
+    "How Remet handles your data: what we hold, what we never hold, location, how long we keep it, and your rights under the DPDP Act 2023.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -37,17 +38,16 @@ export default function PrivacyPage() {
           <SummaryHead first>What we hold</SummaryHead>
           <SummaryBody>
             Your handle, your one photo, your interests, your phone number, and the fact that UIDAI confirmed you are one
-            real adult. Nothing else about your identity.
+            real adult. Your real name, held privately for safety and never shown to another user before you agree to meet.
           </SummaryBody>
 
           <SummaryHead>What we never hold</SummaryHead>
           <SummaryBody>
-            Your Aadhaar number. Your real name is held privately for safety and is never shown to another user before you
-            agree to meet. Photos you attach to a wave are stripped of location data before they are stored.
+            Your Aadhaar number. Photos you attach to a wave are stripped of location data before they are stored.
           </SummaryBody>
           <ReviewNote className="leading-[1.4]">
             the app&apos;s Aadhaar notice says name, date of birth and gender come back from UIDAI and the name is kept;
-            counsel to reconcile with &apos;Nothing else about your identity&apos;.
+            counsel to confirm the &apos;What we hold&apos; list against it.
           </ReviewNote>
 
           <SummaryHead>Location</SummaryHead>
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
 
           <SummaryHead>How long</SummaryHead>
           <SummaryBody>
-            Chats and waves clear as the match perishes. Delete your account and everything goes within 30 days, except
+            Chats and waves clear as the match perishes. Delete your account and everything goes within {site.deletionGraceDays} days, except
             payment receipts and safety reports, which the law requires us to keep.
           </SummaryBody>
 
@@ -72,8 +72,12 @@ export default function PrivacyPage() {
             and you will hear back within the statutory window.
           </SummaryBody>
 
+          {/* Production leaves out the full-policy section below (see the showReviewNotes guard), so there the
+              note must not point "below". When counsel's text lands, keep only the first wording. */}
           <InsetNote className="mt-[22px]">
-            This is the plain-language summary. The full legal text below is being finalised by our counsel.
+            {showReviewNotes
+              ? "This is the plain-language summary. The full legal text below is being finalised by our counsel."
+              : "This is the plain-language summary. The full legal text will be published here once our counsel has finalised it."}
           </InsetNote>
         </Section>
 
@@ -109,7 +113,7 @@ export default function PrivacyPage() {
             icon={<VerifiedTick size={20} />}
             title="Your Aadhaar number is not stored"
           >
-            <p className="m-0">
+            <p className="m-0 md:max-w-[62ch]">
               It was used once, with your consent, to confirm you&apos;re one real adult. UIDAI returned a yes. We kept the
               yes, not the number.
             </p>

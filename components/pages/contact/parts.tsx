@@ -37,9 +37,6 @@ export function GroupNote({ children }: { children: ReactNode }) {
   return <p className="m-0 mt-[9px] font-sans text-[12.5px] leading-[1.45] text-muted md:max-w-[440px]">{children}</p>;
 }
 
-/** "24 hours" -> "24h", "15 days" -> "15d", so the card's short figures follow the confirmed facts in lib/site. */
-const short = (span: string) => span.replace(/\s*hours?$/i, "h").replace(/\s*days?$/i, "d");
-
 function Figure({ value, children }: { value: string; children: ReactNode }) {
   return (
     <p className="m-0 flex items-baseline gap-1.5">
@@ -49,24 +46,32 @@ function Figure({ value, children }: { value: string; children: ReactNode }) {
   );
 }
 
-/** Raised card: officer name, company, grievance email | acknowledge / resolve figures. */
+/**
+ * Raised card: officer name, company, grievance email | acknowledge / resolve figures.
+ * The left column may not shrink below the unbreakable email (no min-w-0) and the figures column may
+ * shrink instead, so at 320-339px "to acknowledge" wraps rather than the email running under the divider.
+ */
 export function OfficerCard() {
   return (
     <div className="mt-[9px] flex items-center gap-[14px] rounded-[17px] bg-surface px-[15px] py-[13px] shadow-raise-sm">
-      <div className="min-w-0 flex-1">
+      <div className="flex-1">
         <p className="m-0 font-serif text-[17px] font-medium leading-[1.2] text-ink">{site.grievanceOfficer}</p>
         <p className="m-0 mt-0.5 font-sans text-[11.5px] leading-[1.35] text-muted">{site.company}</p>
+        {/* The 44px hit area overlaps the company line and the card's padding, so the focus ring is drawn
+            around the address itself rather than the whole hit box. */}
         <a
           href={mailto(site.grievanceSubject)}
-          className="-mb-[13px] -mt-2 flex min-h-11 w-max max-w-full items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline"
+          className="group -mb-[13px] -mt-2 flex min-h-11 w-max max-w-full items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline focus-visible:outline-none"
         >
-          {site.email}
+          <span className="rounded-[4px] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-orchid">
+            {site.email}
+          </span>
         </a>
       </div>
       <div aria-hidden="true" className="w-px flex-none self-stretch bg-bg" />
-      <div className="flex flex-none flex-col gap-2">
-        <Figure value={short(site.acknowledgeWithin)}>to acknowledge</Figure>
-        <Figure value={short(site.resolveWithin)}>to resolve</Figure>
+      <div className="flex flex-col gap-2">
+        <Figure value={site.acknowledgeShort}>to acknowledge</Figure>
+        <Figure value={site.resolveShort}>to resolve</Figure>
       </div>
     </div>
   );

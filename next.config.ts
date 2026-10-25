@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       { source: "/index.html", destination: "/", permanent: true },
       { source: "/privacy/index.html", destination: "/privacy", permanent: true },
       { source: "/terms/index.html", destination: "/terms", permanent: true },
+      // The old favicon and wordmark, in case they are linked from elsewhere.
+      { source: "/brand/mark.png", destination: "/icon.png", permanent: true },
+      { source: "/brand/wordmark.png", destination: "/brand/wordmark-ink.png", permanent: true },
     ];
   },
 };

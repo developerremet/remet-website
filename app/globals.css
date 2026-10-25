@@ -2,9 +2,9 @@
 
 /*
   Remet design tokens — the app's light theme, copied exactly from the app prototype.
-  Two website-only adjustments, both for text legibility on cream:
+  One website-only adjustment, for text legibility on cream:
   - muted text uses #6B645A (the app's #8C8472 is 2.7:1 on #E8E2D6); #8C8472 stays for decoration.
-  - the primary gradient runs #8E5FA8 -> #6B4483 (white on the app's #C79BD8 -> #8E5FA8 is 2.3-3.3:1).
+  The primary button gradient is the app's own, #C79BD8 -> #8E5FA8 (white label about 3.3:1 at its centre).
 */
 @theme {
   --color-bg: #E8E2D6;
@@ -64,13 +64,26 @@
 }
 
 @layer utilities {
-  .bg-primary-cta { background: linear-gradient(145deg, #8E5FA8, #6B4483); }
+  .bg-primary-cta { background: linear-gradient(145deg, #C79BD8, #8E5FA8); } /* the app's primary button */
   .bg-destructive-cta { background: linear-gradient(145deg, #B4553C, #A6452F); }
   .bg-check-badge { background: linear-gradient(145deg, #C79BD8, #8E5FA8); }
 }
 
+/* Entrance for above-the-fold content: plain CSS, so it plays on first paint without waiting for JavaScript.
+   Stagger with style={{ animationDelay }}. Reduced motion (below) collapses it to the final state. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(8px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+/* backwards, not both: once it has played, the element's own transform/filter (e.g. a button's press) apply again. */
+.animate-rise-in { animation: rise-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+
+@media print {
+  [data-reveal] > *, [data-reveal-text] span { opacity: 1 !important; filter: none !important; transform: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
   /* Motion components server-render their hidden state; show the final state instead. */
   [data-reveal] > *, [data-reveal-text] span { opacity: 1 !important; filter: none !important; transform: none !important; }
 }

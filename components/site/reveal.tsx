@@ -1,5 +1,3 @@
-"use client";
-
 import type { ReactNode } from "react";
 import { BlurFade } from "@/components/magicui/blur-fade";
 

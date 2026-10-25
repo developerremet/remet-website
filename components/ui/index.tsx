@@ -6,9 +6,10 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { showReviewNotes } from "@/lib/review";
 
-/** Internal routes use next/link; mailto:, tel: and absolute URLs use a plain anchor. */
+/** Internal routes use next/link. Same-page "#..." links, mailto:, tel: and absolute URLs use a plain anchor,
+ *  so the browser's own fragment jump moves keyboard focus to the target. */
 export function SmartLink({ href, ...rest }: ComponentProps<"a"> & { href: string }) {
-  if (href.startsWith("/") || href.startsWith("#")) return <Link href={href} {...rest} />;
+  if (href.startsWith("/")) return <Link href={href} {...rest} />;
   return <a href={href} {...rest} />;
 }
 
@@ -174,7 +175,7 @@ export const VerifiedTick = ({ size = 22 }: { size?: number }) => (
 
 type ButtonVariant = "primary" | "surface" | "ghost" | "ghost-muted" | "destructive";
 const buttonCls: Record<ButtonVariant, string> = {
-  // Website deviation: one gradient step deeper than the app so white text reads (see globals.css).
+  // Same gradient as the app's primary button (#C79BD8 -> #8E5FA8, 145deg).
   primary: "bg-primary-cta text-white shadow-raise min-h-[58px] rounded-cta text-[16px] font-semibold",
   destructive: "bg-destructive-cta text-white shadow-raise min-h-[56px] rounded-cta text-[16px] font-semibold",
   surface: "bg-surface text-ink shadow-raise-sm min-h-[52px] rounded-[17px] text-[15px] font-semibold",
@@ -199,33 +200,13 @@ export function Button({
 }
 
 // Natural pixel sizes of the pose PNGs, so next/image keeps each pose's own aspect ratio inside the slot.
-const poseSize: Record<string, [number, number]> = {
+const poseSize = {
   attentive: [567, 635], calm: [535, 573], content: [542, 613], curious: [575, 650], flat: [519, 561], heart: [542, 612],
   judging: [574, 646], ledger: [583, 618], melancholy: [575, 619], papers: [554, 606], pleased: [570, 627], pondering: [579, 624],
   question: [522, 589], "side-eye": [536, 642], smug: [533, 633], stern: [556, 637], thinking: [538, 634], waving: [560, 614],
-};
+} satisfies Record<string, [number, number]>;
 
-const poses = {
-  papers: "Munshi reading a stack of papers",
-  ledger: "Munshi writing in his ledger",
-  question: "Munshi with a question",
-  stern: "Munshi looking stern",
-  flat: "Munshi, unimpressed",
-  attentive: "Munshi, wide-eyed",
-  "side-eye": "Munshi giving side-eye",
-  waving: "Munshi waving",
-  thinking: "Munshi thinking",
-  pondering: "Munshi pondering",
-  melancholy: "Munshi looking sad",
-  smug: "Munshi looking pleased with himself",
-  heart: "Munshi with a heart",
-  content: "Munshi smiling",
-  calm: "Munshi, eyes closed",
-  curious: "Munshi looking up",
-  judging: "Munshi judging",
-  pleased: "Munshi delighted",
-} as const;
-export type MunshiPose = keyof typeof poses;
+export type MunshiPose = keyof typeof poseSize;
 
 /** Munshi slot: black pose (decorative) + Fraunces italic quote, as on every app screen. */
 export function MunshiSlot({ pose, quote, width = 132, height = 150, className }: { pose: MunshiPose; quote: ReactNode; width?: number; height?: number; className?: string }) {
@@ -257,8 +238,6 @@ export function CounselSlot({ label = "Counsel to draft", children, className }:
     </div>
   );
 }
-
-export const Hairline = ({ className }: { className?: string }) => <div aria-hidden="true" className={cn("h-px bg-hairline", className)} />;
 
 /** Inner-page frame: header, a centred reading column (mobile-first, 720px max), then the footer. */
 export function PageColumn({ children, className }: { children: ReactNode; className?: string }) {

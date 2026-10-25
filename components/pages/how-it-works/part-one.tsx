@@ -1,7 +1,6 @@
 // Part one of /how-it-works, ported from HowItWorks.dc.html: the intro, the fact chips,
 // the jump links and the twelve app steps.
 import Image from "next/image";
-import Link from "next/link";
 import { MunshiSlot, ReviewNote, SectionLabel } from "@/components/ui";
 import { site } from "@/lib/site";
 import { Eyebrow, Lede, ScreenCaption, SectionTitle, sectionRule } from "./shared";
@@ -125,7 +124,8 @@ const steps: Step[] = [
 ];
 
 const dtCls = "font-sans text-[11px] font-semibold uppercase leading-[normal] tracking-[1.5px]";
-const ddCls = "m-0 mt-1.5 font-sans text-[12.5px] leading-[1.45] text-body";
+// 62ch keeps a line near 75 characters in the 720px column; at 390px the text is narrower than the cap.
+const ddCls = "m-0 mt-1.5 max-w-[62ch] font-sans text-[12.5px] leading-[1.45] text-body";
 
 function StepItem({ step }: { step: Step }) {
   return (
@@ -147,16 +147,17 @@ function StepItem({ step }: { step: Step }) {
             <dd className={ddCls}>{step.remet}</dd>
           </div>
         </dl>
-        <figure className="m-0 w-[122px] flex-none">
+        {/* Below 360px the screen shrinks (116x252 -> 90x195) so the Remet box keeps a readable line length. */}
+        <figure className="m-0 w-[122px] flex-none max-[360px]:w-[96px]">
           <Image
             src={step.src}
             alt={step.alt}
             width={392}
             height={850}
-            sizes="116px"
+            sizes="(max-width: 359px) 90px, 116px"
             // Step 01's screen is above the fold and is the page's Largest Contentful Paint, so it loads eagerly.
             loading={step.n === "01" ? "eager" : undefined}
-            className="m-[3px] block h-[252px] w-[116px] rounded-[16px] object-cover shadow-[0_0_0_3px_#15110B,5px_6px_12px_rgba(176,162,138,0.55)]"
+            className="m-[3px] block h-[252px] w-[116px] rounded-[16px] object-cover shadow-[0_0_0_3px_#15110B,5px_6px_12px_rgba(176,162,138,0.55)] max-[360px]:h-[195px] max-[360px]:w-[90px]"
           />
           <ScreenCaption />
         </figure>
@@ -189,7 +190,9 @@ export function PartOneIntro() {
         <ul className="m-0 mt-[9px] flex list-none flex-wrap gap-[9px] p-0">
           {jumpLinks.map((l) => (
             <li key={l.href}>
-              <Link
+              {/* A plain anchor, not next/link: the browser's own fragment navigation moves the keyboard
+                  starting point to the target, so the next Tab continues from there. */}
+              <a
                 href={l.href}
                 className="flex min-h-11 items-center rounded-chip bg-surface px-4 font-sans text-[13px] font-semibold leading-[normal] text-body no-underline shadow-raise-sm"
               >
@@ -199,7 +202,7 @@ export function PartOneIntro() {
                     &#8250;
                   </span>
                 ) : null}
-              </Link>
+              </a>
             </li>
           ))}
         </ul>
@@ -222,7 +225,7 @@ export function PartOneSteps() {
       </ol>
       <MunshiSlot
         pose="content"
-        className="mt-[18px] items-center [&_blockquote]:mb-0 [&_blockquote]:leading-[1.45]"
+        className="mt-[18px] items-center [&_blockquote]:mb-0 [&_blockquote]:max-w-[62ch] [&_blockquote]:leading-[1.45]"
         quote={"\"Found each other. Now put the phone down, even I know that's the point.\""}
       />
     </section>

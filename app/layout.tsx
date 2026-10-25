@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   title: { default: "Remet: verified people nearby, a real place to meet", template: "%s · Remet" },
   description:
     "See who is out and open right now, talk for five minutes, then meet at a public partner venue. Every account is identity-verified. 18+ only. Opening in Indore.",
-  openGraph: { siteName: "Remet", type: "website", locale: "en_IN", url: site.url },
-  alternates: { canonical: "/" },
+  // No og:url or canonical here: they would be inherited by every page. Each page sets its own canonical.
+  openGraph: { siteName: "Remet", type: "website", locale: "en_IN" },
 };
 
 export const viewport: Viewport = { themeColor: "#E8E2D6", width: "device-width", initialScale: 1 };

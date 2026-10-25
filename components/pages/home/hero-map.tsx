@@ -55,7 +55,9 @@ export function HeroMap({ className }: { className?: string }) {
   const lRef = useRef<HTMLDivElement>(null);
   const bRef = useRef<HTMLDivElement>(null);
   const cafeRef = useRef<HTMLDivElement>(null);
-  // Beams are motion only: the drawn lines below are always there; the light pulse is added on top.
+  // Beams are motion only: the drawn lines below are always there; the light pulse is added on top. They are
+  // client-only, skipped under reduced motion, and mounted only while the map is on screen, so the pulse does
+  // not keep animating SVG attributes every frame after the hero has scrolled away.
   const [beams, setBeams] = useState(false);
   const [k, setK] = useState(1);
 
@@ -64,8 +66,12 @@ export function HeroMap({ className }: { className?: string }) {
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ro = new ResizeObserver(() => setK(el.getBoundingClientRect().width / STAGE));
     ro.observe(el);
-    setBeams(true);
-    return () => ro.disconnect();
+    const io = new IntersectionObserver((entries) => setBeams(entries[entries.length - 1].isIntersecting));
+    io.observe(el);
+    return () => {
+      ro.disconnect();
+      io.disconnect();
+    };
   }, []);
 
   return (
@@ -179,8 +185,16 @@ export function HeroMap({ className }: { className?: string }) {
             a partner café
           </span>
         </div>
-        <div className="absolute flex items-end justify-center" style={{ right: u(12), bottom: u(8), width: u(62), height: u(72) }}>
-          <Image src="/munshi/side-eye.png" alt="" width={60} height={72} className="block h-auto max-h-full w-auto max-w-full object-contain" />
+        {/* Munshi fills his slot, so he scales with the map like everything else; sizes asks for a file to match. */}
+        <div className="absolute" style={{ right: u(12), bottom: u(8), width: u(62), height: u(72) }}>
+          <Image
+            src="/munshi/side-eye.png"
+            alt=""
+            width={536}
+            height={642}
+            sizes="(min-width: 1024px) 90px, (min-width: 768px) 121px, 18vw"
+            className="block h-full w-full object-contain object-bottom"
+          />
         </div>
       </div>
     </div>
