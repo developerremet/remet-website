@@ -29,7 +29,7 @@ export function WaitlistForm({ source = "join" }: { source?: string }) {
 
   return (
     <form onSubmit={onSubmit} noValidate className="m-0">
-      <label htmlFor={`${id}-phone`} className="mt-[22px] block font-sans text-[11px] font-semibold uppercase tracking-[1.5px] text-muted">
+      <label htmlFor={`${id}-phone`} className="mt-[22px] block font-sans text-[11px] font-semibold uppercase leading-[normal] tracking-[1.5px] text-muted">
         WhatsApp number
       </label>
       <div className="mt-[9px] flex h-[61px] items-center gap-2.5 rounded-card bg-surface p-1.5 shadow-inset focus-within:shadow-[inset_-4px_-4px_9px_rgba(255,255,255,0.92),inset_4px_4px_10px_rgba(176,162,138,0.55),inset_0_0_0_1.5px_#8E5FA8]">
@@ -72,7 +72,7 @@ export function WaitlistForm({ source = "join" }: { source?: string }) {
         role="status"
         aria-live="polite"
         className={cn(
-          "m-0 mt-2.5 min-h-[1.45em] text-center font-sans text-[13px] font-semibold leading-[1.45]",
+          "m-0 mt-2.5 text-center font-sans text-[13px] font-semibold leading-[1.45] empty:mt-0",
           state.status === "ok" ? "text-verd-text" : "text-ox-deep",
         )}
       >

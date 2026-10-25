@@ -29,7 +29,7 @@ export function ScreenHeader({ title, backHref = "/", backLabel = "Back to home"
       >
         &#8249;
       </Link>
-      <h1 className="m-0 font-serif text-[27px] font-medium text-ink">{title}</h1>
+      <h1 className="m-0 font-serif text-[27px] font-medium leading-[normal] text-ink">{title}</h1>
     </header>
   );
 }
@@ -54,7 +54,7 @@ export function SectionLabel({
     <Tag
       id={id}
       className={cn(
-        "m-0 font-sans text-[11px] uppercase",
+        "m-0 font-sans text-[11px] uppercase leading-[normal]",
         variant === "content" ? "font-semibold tracking-[1.5px]" : "font-medium tracking-[1.2px]",
         tone === "orchid" ? "text-orchid-deep" : tone === "ox" ? "text-ox-deep" : "text-muted",
         className,
@@ -99,7 +99,7 @@ export function Row({
     >
       {leading}
       <span className="block min-w-0 flex-1">
-        <span className={cn("block font-sans text-[16.5px] font-semibold", tone === "ox" ? "text-ox-deep" : "text-ink")}>{title}</span>
+        <span className={cn("block font-sans text-[16.5px] font-semibold leading-[normal]", tone === "ox" ? "text-ox-deep" : "text-ink")}>{title}</span>
         {subtitle ? <span className="mt-[3px] block font-sans text-[12.5px] leading-[1.45] text-muted">{subtitle}</span> : null}
       </span>
       {hint ? <span className="flex-none font-sans text-[12.5px] text-muted">{hint}</span> : null}
@@ -198,6 +198,13 @@ export function Button({
   );
 }
 
+// Natural pixel sizes of the pose PNGs, so next/image keeps each pose's own aspect ratio inside the slot.
+const poseSize: Record<string, [number, number]> = {
+  attentive: [567, 635], calm: [535, 573], content: [542, 613], curious: [575, 650], flat: [519, 561], heart: [542, 612],
+  judging: [574, 646], ledger: [583, 618], melancholy: [575, 619], papers: [554, 606], pleased: [570, 627], pondering: [579, 624],
+  question: [522, 589], "side-eye": [536, 642], smug: [533, 633], stern: [556, 637], thinking: [538, 634], waving: [560, 614],
+};
+
 const poses = {
   papers: "Munshi reading a stack of papers",
   ledger: "Munshi writing in his ledger",
@@ -222,10 +229,12 @@ export type MunshiPose = keyof typeof poses;
 
 /** Munshi slot: black pose (decorative) + Fraunces italic quote, as on every app screen. */
 export function MunshiSlot({ pose, quote, width = 132, height = 150, className }: { pose: MunshiPose; quote: ReactNode; width?: number; height?: number; className?: string }) {
+  const [nw, nh] = poseSize[pose];
+  const scale = Math.min(width / nw, height / nh);
   return (
     <figure className={cn("m-0 flex items-end gap-3", className)}>
       <div aria-hidden="true" style={{ width, height }} className="flex flex-none items-end justify-center">
-        <Image src={`/munshi/${pose}.png`} alt="" width={width} height={height} className="h-auto max-h-full w-auto max-w-full object-contain" />
+        <Image src={`/munshi/${pose}.png`} alt="" width={Math.round(nw * scale)} height={Math.round(nh * scale)} />
       </div>
       <blockquote className="m-0 mb-3 flex-1 font-serif text-[12.5px] italic leading-[1.42] text-muted">{quote}</blockquote>
     </figure>
@@ -243,8 +252,8 @@ export function CounselSlot({ label = "Counsel to draft", children, className }:
   if (!showReviewNotes) return null;
   return (
     <div className={cn("rounded-[14px] px-[15px] py-4 outline-[1.5px] outline-offset-[-1px] outline-dashed outline-muted", className)}>
-      <p className="m-0 font-sans text-[11px] font-semibold uppercase tracking-[1.5px] text-orchid-deep">{label}</p>
-      <p className="m-0 mt-1.5 font-sans text-[12.5px] leading-[1.45] text-muted">[{children}]</p>
+      <p className="m-0 font-sans text-[11px] font-semibold uppercase leading-[normal] tracking-[1.5px] text-orchid-deep">{label}</p>
+      <p className="m-0 mt-1.5 font-sans text-[12.5px] leading-[1.5] text-muted">[{children}]</p>
     </div>
   );
 }

@@ -32,7 +32,12 @@ export const viewport: Viewport = { themeColor: "#E8E2D6", width: "device-width"
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-IN" className={`${fraunces.variable} ${hanken.variable}`}>
-      <body>{children}</body>
+      <body>
+        <noscript>
+          <style>{"[data-reveal] > *, [data-reveal-text] span { opacity: 1 !important; filter: none !important; transform: none !important; }"}</style>
+        </noscript>
+        {children}
+      </body>
     </html>
   );
 }

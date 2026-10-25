@@ -2,4 +2,41 @@
 
 The Remet website: verified people nearby, a real place to meet. First city, Indore.
 
-Built mobile-first to match the Remet app's design language. Deployed on Vercel.
+Built mobile-first to match the Remet app's design language (light theme). Next.js (App Router), Tailwind CSS 4, deployed on Vercel.
+
+## Run it
+
+```sh
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
+npm run typecheck
+```
+
+## Where things live
+
+| Path | What |
+| --- | --- |
+| `app/<route>/page.tsx` | One file per page: `/`, `/how-it-works`, `/safety`, `/privacy`, `/terms`, `/delete-account`, `/contact` |
+| `components/pages/<route>/` | Pieces used by one page only |
+| `components/ui/` | Shared pieces that mirror the app: rows, cards, tinted cards, buttons, Munshi slot |
+| `components/site/` | Header, footer, waitlist form, scroll progress, reveal |
+| `components/magicui/` | Motion components from [Magic UI](https://magicui.design) (MIT, see `LICENSE.md` there) |
+| `app/globals.css` | Colour, shadow, radius and font tokens taken from the app |
+| `lib/site.ts` | Company facts (name, address, email, Grievance Officer). Change them here only |
+| `lib/supabase-config.ts` | Public Supabase URL and anon key for the waitlist. The keep-alive workflow reads this file |
+| `lib/waitlist.ts` | Waitlist signup (Supabase REST insert) |
+
+## Review notes and counsel slots
+
+Lines that start with "Confirm before publishing" and the dashed "Counsel to draft" boxes show on local and preview builds only. They are removed automatically on the Vercel production deployment (`NEXT_PUBLIC_VERCEL_ENV=production`), or anywhere with `NEXT_PUBLIC_HIDE_REVIEW_NOTES=1`.
+
+Before remet.me points here:
+
+- replace the prototype screenshots in `public/screens/` with TestFlight captures;
+- put counsel's text in place of every counsel slot (Privacy, Terms, Safety, Contact);
+- confirm the copy flagged by the review notes.
+
+## Supabase keep-alive
+
+`.github/workflows/supabase-keepalive.yml` pings the waitlist table every second day so the free-tier project does not pause. It can also be run by hand from the Actions tab.

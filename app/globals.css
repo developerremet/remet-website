@@ -71,4 +71,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  /* Motion components server-render their hidden state; show the final state instead. */
+  [data-reveal] > *, [data-reveal-text] span { opacity: 1 !important; filter: none !important; transform: none !important; }
 }
