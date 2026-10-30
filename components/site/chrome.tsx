@@ -47,6 +47,8 @@ export function InnerHeader({ title }: { title: string }) {
 
 const footerLink = "flex min-h-11 items-center font-sans text-[15px] font-semibold leading-[normal] text-ink no-underline";
 
+const socialLink = "flex size-11 items-center justify-center rounded-[3px] text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-orchid focus-visible:outline-solid";
+
 /** Shared footer, ported from the Footer artboard. `wide` matches the homepage frame and spreads out from 1024px. */
 export function SiteFooter({ wide = false }: { wide?: boolean }) {
   return (
@@ -95,10 +97,26 @@ export function SiteFooter({ wide = false }: { wide?: boolean }) {
             <br />
             {site.addressLines.join(", ")}
           </p>
-          {/* The 44px hit area overlaps the address line, so the focus ring is drawn on the text only. */}
-          <a href={mailto()} className="group -mt-2 flex min-h-11 w-max items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline focus-visible:outline-none">
-            <span className="rounded-[3px] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-orchid group-focus-visible:outline-solid">{site.email}</span>
-          </a>
+          <div className="-mt-2 flex items-center justify-between">
+            {/* The 44px hit area overlaps the address line, so the focus ring is drawn on the text only. */}
+            <a href={mailto()} className="group flex min-h-11 w-max items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline focus-visible:outline-none">
+              <span className="rounded-[3px] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-orchid group-focus-visible:outline-solid">{site.email}</span>
+            </a>
+            <div className="-mr-3 flex">
+              <a href={site.xUrl} target="_blank" rel="noopener noreferrer" aria-label="Remet on X" className={socialLink}>
+                <svg aria-hidden="true" viewBox="0 0 24 24" width={18} height={18} fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+              <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Remet on Instagram" className={socialLink}>
+                <svg aria-hidden="true" viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2}>
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

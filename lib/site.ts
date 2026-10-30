@@ -5,6 +5,8 @@ export const site = {
   company: "Remet Socials Private Limited",
   addressLines: ["B3, BRG Hill View", "Indore 452016, Madhya Pradesh"],
   email: "support@remet.me",
+  xUrl: "https://x.com/RemetSocials",
+  instagramUrl: "https://www.instagram.com/remetsocials/",
   grievanceOfficer: "Abhishek Tiwari",
   grievanceSubject: "Grievance",
   acknowledgeWithin: "24 hours",
