@@ -13,15 +13,40 @@ const wordmark = (h: number, preload = false) => (
 /** The homepage content frame (22px gutter; 676px column from 768px; 1056px from 1024px). Same as components/pages/home. */
 const homeFrame = "mx-auto w-full max-w-[1120px] px-[22px] md:max-w-[740px] md:px-8 lg:max-w-[1120px]";
 
+const socialLink = "flex size-11 items-center justify-center rounded-[3px] text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-orchid focus-visible:outline-solid";
+
+/** X and Instagram icons. Hit areas are 44px, so callers offset the row to line the glyphs up with the logo. */
+function SocialLinks({ size, className }: { size: number; className: string }) {
+  return (
+    <div className={cn("flex", className)}>
+      <a href={site.xUrl} target="_blank" rel="noopener noreferrer" aria-label="Remet on X" className={socialLink}>
+        <svg aria-hidden="true" viewBox="0 0 24 24" width={size} height={size} fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      </a>
+      <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Remet on Instagram" className={socialLink}>
+        <svg aria-hidden="true" viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth={2}>
+          <rect x="3" y="3" width="18" height="18" rx="5" />
+          <circle cx="12" cy="12" r="4" />
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+        </svg>
+      </a>
+    </div>
+  );
+}
+
 /** Homepage header: ink wordmark + a raised "How it works" link, as in the design. */
 export function HomeHeader() {
   return (
     <>
       <ScrollProgress />
-      <header className={cn("flex items-center justify-between pt-[18px]", homeFrame)}>
-        <Link href="/" aria-label="Remet home" className="-ml-[3px] flex min-h-11 items-center">
-          {wordmark(24, true)}
-        </Link>
+      <header className={cn("flex items-start justify-between pt-[18px]", homeFrame)}>
+        <div>
+          <Link href="/" aria-label="Remet home" className="-ml-[3px] flex min-h-11 items-center">
+            {wordmark(24, true)}
+          </Link>
+          <SocialLinks size={24} className="-ml-2.5" />
+        </div>
         <nav aria-label="Main">
           <Link
             href="/how-it-works"
@@ -47,17 +72,18 @@ export function InnerHeader({ title }: { title: string }) {
 
 const footerLink = "flex min-h-11 items-center font-sans text-[15px] font-semibold leading-[normal] text-ink no-underline";
 
-const socialLink = "flex size-11 items-center justify-center rounded-[3px] text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-orchid focus-visible:outline-solid";
-
 /** Shared footer, ported from the Footer artboard. `wide` matches the homepage frame and spreads out from 1024px. */
 export function SiteFooter({ wide = false }: { wide?: boolean }) {
   return (
     <footer className="border-t border-hairline bg-bg">
       <div className={cn("flex flex-col pb-[14px] pt-[26px]", wide ? homeFrame : "mx-auto w-full max-w-[720px] px-[22px]")}>
         <div className={cn(wide && "lg:grid lg:grid-cols-[1fr_minmax(0,380px)_minmax(0,340px)] lg:items-start lg:gap-x-14")}>
-          <Link href="/" aria-label="Remet home" className="-my-2.5 -ml-[3px] flex min-h-11 w-max items-center">
-            {wordmark(24)}
-          </Link>
+          <div>
+            <Link href="/" aria-label="Remet home" className="-my-2.5 -ml-[3px] flex min-h-11 w-max items-center">
+              {wordmark(24)}
+            </Link>
+            <SocialLinks size={18} className="-ml-[13px] mt-2.5" />
+          </div>
           <nav aria-label="Footer" className={cn("mt-[22px] grid grid-cols-2 gap-x-3.5", wide && "lg:mt-0")}>
             <div>
               <h2 className="m-0 font-sans text-[11px] font-medium uppercase leading-[normal] tracking-[1.2px] text-muted">About</h2>
@@ -97,26 +123,10 @@ export function SiteFooter({ wide = false }: { wide?: boolean }) {
             <br />
             {site.addressLines.join(", ")}
           </p>
-          <div className="-mt-2 flex items-center justify-between">
-            {/* The 44px hit area overlaps the address line, so the focus ring is drawn on the text only. */}
-            <a href={mailto()} className="group flex min-h-11 w-max items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline focus-visible:outline-none">
-              <span className="rounded-[3px] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-orchid group-focus-visible:outline-solid">{site.email}</span>
-            </a>
-            <div className="-mr-3 flex">
-              <a href={site.xUrl} target="_blank" rel="noopener noreferrer" aria-label="Remet on X" className={socialLink}>
-                <svg aria-hidden="true" viewBox="0 0 24 24" width={18} height={18} fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-              <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Remet on Instagram" className={socialLink}>
-                <svg aria-hidden="true" viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2}>
-                  <rect x="3" y="3" width="18" height="18" rx="5" />
-                  <circle cx="12" cy="12" r="4" />
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-                </svg>
-              </a>
-            </div>
-          </div>
+          {/* The 44px hit area overlaps the address line, so the focus ring is drawn on the text only. */}
+          <a href={mailto()} className="group -mt-2 flex min-h-11 w-max items-center font-sans text-[13px] font-semibold leading-[normal] text-orchid-deep no-underline focus-visible:outline-none">
+            <span className="rounded-[3px] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-orchid group-focus-visible:outline-solid">{site.email}</span>
+          </a>
         </div>
       </div>
     </footer>
